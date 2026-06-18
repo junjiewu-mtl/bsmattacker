@@ -2,8 +2,7 @@
 
 **A reproducible benchmark and attack-injection library for V2X Basic Safety Message (BSM) misbehavior detection.**
 
-<!-- At release: add the Zenodo DOI badge here, e.g.
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX) -->
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20754023.svg)](https://doi.org/10.5281/zenodo.20754023)
 
 BSMAttacker is the research artifact for the paper *"BSMAttacker: Simulation-to-Field
 Evaluation of Safety-Application-Directed V2X Misbehavior Detection"* (IEEE Transactions

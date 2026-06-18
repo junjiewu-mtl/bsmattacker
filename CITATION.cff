@@ -27,6 +27,7 @@ repository-code: "https://github.com/junjiewu-mtl/bsmattacker"
 license: Apache-2.0
 version: "1.0.0"
 date-released: "2026-06-18"
+doi: "10.5281/zenodo.20754023"
 keywords:
   - V2X
   - misbehavior detection
