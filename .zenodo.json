@@ -1,0 +1,23 @@
+{
+  "title": "BSMAttacker: Simulation-to-Field Evaluation of Safety-Application-Directed V2X Misbehavior Detection",
+  "upload_type": "software",
+  "license": "Apache-2.0",
+  "creators": [
+    { "name": "Wu, Junjie", "affiliation": "McGill University" },
+    { "name": "Fung, Benjamin C. M.", "affiliation": "McGill University" },
+    { "name": "Yu, Hanbo", "affiliation": "McGill University" },
+    { "name": "Stakhanova, Natalia", "affiliation": "University of Saskatchewan" }
+  ],
+  "description": "Source code for BSMAttacker, a reproducible benchmark and attack-injection library for V2X Basic Safety Message (BSM) misbehavior detection. Eleven safety-application attacks are injected into benign trajectories and scored by nine misbehavior detectors trained on the VeReMi Extension simulation and tested on five real-world V2X datasets (Montreal, SPMD Ann Arbor, AMCD Tysons, V2AIX Aachen, BME Budapest), followed by a forward-collision-warning and intersection-movement-assist safety-application replay. Accompanies the IEEE Transactions on Intelligent Transportation Systems submission of the same name.",
+  "keywords": [
+    "V2X",
+    "misbehavior detection",
+    "basic safety message",
+    "intrusion detection",
+    "anomaly detection",
+    "vehicular networks",
+    "benchmark",
+    "sim-to-real"
+  ],
+  "access_right": "open"
+}

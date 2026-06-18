@@ -1,0 +1,52 @@
+cff-version: 1.2.0
+message: "If you use BSMAttacker, please cite both the software and the paper."
+title: "BSMAttacker"
+abstract: >-
+  A reproducible benchmark and attack-injection library for V2X Basic Safety
+  Message (BSM) misbehavior detection. Eleven safety-application attacks are
+  injected into benign trajectories and scored by nine misbehavior detectors
+  trained on the VeReMi Extension simulation and tested on five real-world
+  V2X datasets, with a forward-collision / intersection-movement safety-app
+  replay.
+type: software
+authors:
+  - family-names: Wu
+    given-names: Junjie
+    affiliation: "McGill University"
+    email: junjie.wu@mail.mcgill.ca
+  - family-names: Fung
+    given-names: "Benjamin C. M."
+    affiliation: "McGill University"
+  - family-names: Yu
+    given-names: Hanbo
+    affiliation: "McGill University"
+  - family-names: Stakhanova
+    given-names: Natalia
+    affiliation: "University of Saskatchewan"
+repository-code: "https://github.com/junjiewu-mtl/bsmattacker"
+license: Apache-2.0
+version: "1.0.0"
+date-released: "2026-06-18"
+keywords:
+  - V2X
+  - misbehavior detection
+  - basic safety message
+  - intrusion detection
+  - anomaly detection
+  - vehicular networks
+  - benchmark
+preferred-citation:
+  type: article
+  title: "BSMAttacker: Simulation-to-Field Evaluation of Safety-Application-Directed V2X Misbehavior Detection"
+  authors:
+    - family-names: Wu
+      given-names: Junjie
+    - family-names: Fung
+      given-names: "Benjamin C. M."
+    - family-names: Yu
+      given-names: Hanbo
+    - family-names: Stakhanova
+      given-names: Natalia
+  journal: "IEEE Transactions on Intelligent Transportation Systems"
+  year: 2026
+  notes: "Under review."

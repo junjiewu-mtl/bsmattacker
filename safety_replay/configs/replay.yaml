@@ -1,0 +1,37 @@
+# Safety-application replay configuration (FCW / IMA / EEBL).
+# Replays injected attacks against real warning events from the NYC CV Pilot
+# and measures missed-alert rates. Safety thresholds follow SAE J2945/1 and the
+# VSC-A final report (DOT HS 811 492B).
+
+data:
+  # NYC CV Pilot event data (public; obtain from USDOT ITS DataHub).
+  nyc_event_csv: "data/nyc_cv_pilot_events.csv"
+  coordinate_system: "cartesian"   # NYC events use obfuscated X_m / Y_m in metres
+
+safety_thresholds:
+  fcw_ttc_alert_s: 2.6
+  fcw_ttc_prealert_s: 4.0
+  ima_tti_alert_s: 3.0
+  ima_min_distance_m: 3.5
+  eebl_decel_threshold_mpss: -3.92   # 0.4 g
+
+event_filter:
+  min_target_bsms_pre_trigger: 5
+  pre_trigger_window_s: [-5.0, 0.0]
+
+# The eleven safety-application attacks (paper denominator).
+attacks:
+  - {name: constant_position_offset,    family: veremi_equivalent}
+  - {name: constant_speed,              family: veremi_equivalent}
+  - {name: eventual_stop,               family: veremi_equivalent}
+  - {name: ghost_vehicle,               family: vasp_inspired}
+  - {name: opposite_heading,            family: vasp_inspired}
+  - {name: perpendicular_heading,       family: vasp_inspired}
+  - {name: constant_acceleration,       family: vasp_inspired}
+  - {name: slow_position_drift,         family: context_aware}
+  - {name: false_deceleration_cruising, family: context_aware}
+  - {name: position_pullthrough_at_stop, family: context_aware}
+  - {name: heading_lock,                family: context_aware}
+
+random_seed: 42
+output_dir: "results"

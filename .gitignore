@@ -1,0 +1,49 @@
+# Datasets and derived data live on Zenodo / the original sources, never in git.
+data/
+datasets/
+results/
+checkpoints/
+*.parquet
+*.csv
+*.joblib
+*.pt
+*.pth
+*.pkl
+*.npz
+
+# Allow the small example fixture used by the smoke test and unit test.
+!examples/sample_trace.csv
+
+# Native / compiled artifacts (none ship here, but block them by default).
+*.so
+*.o
+*.bin
+
+# Python
+__pycache__/
+.pytest_cache/
+.ipynb_checkpoints/
+*.py[cod]
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Local secrets (never commit credentials)
+.env
+.env.local
+*.secret
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

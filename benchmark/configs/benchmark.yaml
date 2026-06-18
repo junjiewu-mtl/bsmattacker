@@ -1,0 +1,157 @@
+# BSMAttacker benchmark configuration.
+# Nine detectors x eleven safety-application attacks x {VeReMi Extension
+# (synthetic) + five real-world datasets}. Detectors train on the synthetic
+# corpus and are tested on the real-world corpora without retraining.
+#
+# Data paths are repo-relative; place the corpora under data/ (see the README
+# Data Availability section) or override the paths below.
+
+models:
+  # --- Supervised ---
+  lstm:                     # one-layer unidirectional LSTM classifier
+    type: "lstm"
+    hidden_dim: 64
+    num_layers: 1
+    dropout: 0.3
+    learning_rate: 0.001
+
+  gb:                       # gradient boosting (histogram)
+    type: "gb"
+    n_estimators: 100
+    max_depth: 8
+    learning_rate: 0.1
+    random_state: 42
+
+  # --- Unsupervised: classical ---
+  iforest:                  # Isolation Forest
+    type: "iforest"
+    contamination: 0.01
+    n_estimators: 100
+    random_state: 1
+
+  lof:                      # Local Outlier Factor (Breunig et al., 2000)
+    type: "lof"
+    n_neighbors: 20
+    contamination: 0.01
+
+  ocsvm:                    # One-Class SVM (Schölkopf et al., 2001)
+    type: "ocsvm"
+    kernel: "rbf"
+    nu: 0.01
+    max_samples: 50000
+
+  # --- Unsupervised: deep ---
+  anomaly_transformer:      # Anomaly Transformer (Xu et al., ICLR 2022)
+    type: "anomaly_transformer"
+    d_model: 512
+    n_heads: 8
+    n_layers: 3
+    d_ff: 512
+    dropout: 0.0
+    lambda_: 3.0
+    learning_rate: 0.0001
+    batch_size: 256
+    epochs: 15
+
+  deep_svdd:                # Deep SVDD (Ruff et al., ICML 2018) -- needs deepod
+    type: "deep_svdd"
+    epochs: 20
+    hidden_dims: "64,32"
+    rep_dim: 16
+    nu: 0.1
+
+  dif:                      # Deep Isolation Forest (Xu & Pang et al., TKDE 2023)
+    type: "dif"
+    epochs: 20
+    hidden_dims: "64,32"
+    n_ensemble: 50
+
+  gdn:                      # Graph Deviation Network (Deng & Hooi, AAAI 2021)
+    type: "gdn"
+    embed_dim: 64
+    topk: 5
+    learning_rate: 0.001
+    epochs: 20
+
+# The eleven safety-application attacks of the main experiments.
+# (The library implements more; these eleven are the paper denominator.)
+attack_configs:
+  # --- Inherited from VeReMi / the VeReMi Extension (3) ---
+  constant_position_offset: {attack_ratio: 1.0, family: veremi_equivalent}  # Constant Position Offset
+  constant_speed:           {attack_ratio: 1.0, family: veremi_equivalent}  # Constant Speed
+  eventual_stop:            {attack_ratio: 1.0, family: veremi_equivalent}  # Eventual Stop
+
+  # --- Inherited from VASP (4) ---
+  ghost_vehicle:            {attack_ratio: 1.0, family: vasp_inspired}      # Ghost Vehicle
+  opposite_heading:         {attack_ratio: 1.0, family: vasp_inspired}      # Opposite-Direction Heading
+  perpendicular_heading:    {attack_ratio: 1.0, family: vasp_inspired}      # Cross-Path Heading Spoof
+  constant_acceleration:    {attack_ratio: 1.0, family: vasp_inspired}      # Constant Acceleration
+
+  # --- Introduced in this paper, context-aware (4) ---
+  slow_position_drift:          {attack_ratio: 1.0, family: context_aware}  # Slow Position Drift   (Cruising -> FCW)
+  false_deceleration_cruising:  {attack_ratio: 1.0, family: context_aware}  # False Hard-Brake in Cruising (Cruising -> EEBL)
+  position_pullthrough_at_stop: {attack_ratio: 1.0, family: context_aware}  # Phantom Forward-Roll at Stop (Stationary_Wait -> IMA)
+  heading_lock:                 {attack_ratio: 1.0, family: context_aware}  # Frozen Heading at Turn (Turning -> IMA)
+
+training:
+  seq_len: 10
+  batch_size: 1024
+  epochs: 30
+  learning_rate: 0.001
+  train_ratio: 0.8
+
+corpus:
+  # The detectors train on this synthetic corpus (VeReMi Extension, public).
+  synthetic_path: "data/veremi_ext_benign.parquet"
+  coordinate_system: "cartesian"
+  # Real-world corpora. Montreal is released by the authors (see README);
+  # the other four are obtained from their original public sources.
+  canonical_dir: "data/canonical"
+  manifest: "data/canonical/canonical_manifest.csv"
+  montreal_combined_path: "data/canonical/montreal_combined.parquet"
+  external_sites:
+    v2aix_aachen: "data/external/v2aix_aachen.parquet"
+    bme_budapest: "data/external/bme_budapest.parquet"
+
+column_bridge:
+  timestamp_s: "timestamp"
+  yaw_rate_dps: "yaw_rate_degs"
+
+# Kinematic-only feature set: five raw channels plus six derived. Absolute
+# latitude/longitude are deliberately excluded -- an attacker controls absolute
+# position, so detectors must not consume it as a feature (see the paper's
+# threat model and feature-set discussion).
+features:
+  standard:
+    raw:
+      - speed_mps
+      - heading_deg
+      - accel_long_mps2
+      - accel_lat_mps2
+      - yaw_rate_degs
+    derived:
+      - speed_delta
+      - heading_delta
+      - accel_jerk
+      - pos_vel_consistency
+      - lat_delta
+      - lon_delta
+
+injection:
+  random_seed: 42
+  benign_fraction: 0.70          # 30% attacker vehicles (VeReMi Extension standard)
+  segment_size: 999999           # per-vehicle: the entire trace is one segment
+  strict_vectorized_injection: true
+  apply_sensor_noise: true       # VeReMi Extension sensor-error model on synthetic rows
+  noise_mode: realistic          # Kamel et al. (2020) noise formulas
+  noise_apply_mode: symmetric    # noise applied to all synthetic rows, not just attacks
+  noise_apply_to_real_sites: false   # real sites keep their native GPS noise
+  split_strategy: vehicle_disjoint   # vehicle-disjoint train/test split (no identity leakage)
+  save_scores: true
+
+# Plausibility check: filters each sender's BSM records before training so that
+# data eligibility is separated from detector success (see the paper).
+plausibility_check:
+  enabled: true
+
+output_dir: "results"

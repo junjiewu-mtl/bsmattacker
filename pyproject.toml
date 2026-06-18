@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bsmattacker"
+version = "1.0.0"
+description = "A reproducible benchmark and attack-injection library for V2X BSM misbehavior detection."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [
+  { name = "Junjie Wu", email = "junjie.wu@mail.mcgill.ca" },
+  { name = "Benjamin C. M. Fung" },
+  { name = "Hanbo Yu" },
+  { name = "Natalia Stakhanova" },
+]
+keywords = ["V2X", "misbehavior detection", "BSM", "intrusion detection", "anomaly detection"]
+dependencies = [
+  "numpy",
+  "pandas",
+  "scipy",
+  "scikit-learn",
+  "torch",
+  "pyod",
+  "joblib",
+  "PyYAML",
+  "tqdm",
+]
+
+[project.optional-dependencies]
+# Required only for the Deep SVDD detector.
+deep-svdd = ["deepod"]
+
+[project.urls]
+Repository = "https://github.com/junjiewu-mtl/bsmattacker"
+
+[tool.setuptools]
+packages = ["bsm_attacker", "benchmark", "safety_replay"]
+
+[tool.setuptools.package-data]
+benchmark = ["configs/*.yaml"]
+safety_replay = ["configs/*.yaml"]

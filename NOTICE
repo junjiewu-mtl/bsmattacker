@@ -1,0 +1,43 @@
+BSMAttacker
+Copyright 2026 Junjie Wu, Benjamin C. M. Fung, Hanbo Yu, Natalia Stakhanova
+(McGill University; University of Saskatchewan)
+
+This product includes software developed for the research paper
+"BSMAttacker: Simulation-to-Field Evaluation of Safety-Application-Directed
+V2X Misbehavior Detection."
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+--------------------------------------------------------------------------
+Third-party methods and datasets reproduced or referenced
+--------------------------------------------------------------------------
+
+The attack catalogue reuses attacker semantics defined by prior work:
+
+  * VeReMi and the VeReMi Extension — van der Heijden et al. (2018) and
+    Kamel et al. (2020). The position and speed attacker definitions
+    (constant/random position, constant/random speed, eventual stop)
+    follow these references.
+  * VASP (Vehicular Attack Simulation Platform) — heading, speed-offset,
+    acceleration, and ghost-vehicle attacker families follow the VASP
+    taxonomy.
+  * F2MD / ETSI TR 103 460 — the rule-based plausibility baseline follows
+    the F2MD framework (provided on request; not bundled here).
+
+The detector zoo reimplements published detectors. Each is cited in the
+paper and in the source of benchmark/detectors.py:
+
+  * Isolation Forest (Liu et al.), Local Outlier Factor (Breunig et al.,
+    2000), One-Class SVM (Schölkopf et al., 2001), Gradient Boosting,
+    Deep SVDD (Ruff et al., ICML 2018), Deep Isolation Forest
+    (Xu & Pang et al., TKDE 2023), Anomaly Transformer (Xu et al.,
+    ICLR 2022), Graph Deviation Network (Deng & Hooi, AAAI 2021), and a
+    one-layer LSTM classifier. Classical detectors use scikit-learn and
+    pyod; Deep SVDD uses deepod.
+
+Public corpora referenced in the paper (SPMD Ann Arbor, AMCD Tysons,
+V2AIX Aachen, BME Budapest, and the NYC CV Pilot event data) remain under
+their original licenses and are obtained from their original sources; they
+are not redistributed in this repository. The Montreal corpus collected by
+the authors is released separately (see the Data Availability section of
+the README).

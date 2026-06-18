@@ -1,0 +1,18 @@
+# BSMAttacker runtime dependencies.
+# Versions below are the ones used to produce the published benchmark results.
+# Pin exactly for bit-reproducibility; relax to >= if you only need to run the
+# attack library or the harness on your own data.
+
+numpy==2.4.0
+pandas==2.3.3
+scipy==1.16.3
+scikit-learn==1.8.0
+torch==2.12.0
+pyod==2.0.7
+joblib==1.5.3
+PyYAML==6.0.3
+tqdm==4.67.3
+
+# Optional: required only for the Deep SVDD detector (benchmark/detectors.py).
+# Install if you run the full nine-detector matrix.
+deepod>=0.4.0
