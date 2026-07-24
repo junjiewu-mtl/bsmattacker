@@ -16,7 +16,10 @@ safety_thresholds:
   eebl_decel_threshold_mpss: -3.92   # 0.4 g
 
 event_filter:
-  min_target_bsms_pre_trigger: 5
+  # Keep an event only if the target vehicle sent at least this many BSMs in the
+  # pre-trigger window. The published counts (1,072 FCW and 176 IMA events from
+  # 2,650 FCW and 1,019 IMA triggers) use a minimum of three.
+  min_target_bsms_pre_trigger: 3
   pre_trigger_window_s: [-5.0, 0.0]
 
 # The eleven safety-application attacks (paper denominator).

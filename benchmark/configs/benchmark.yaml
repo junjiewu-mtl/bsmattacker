@@ -104,14 +104,23 @@ corpus:
   # The detectors train on this synthetic corpus (VeReMi Extension, public).
   synthetic_path: "data/veremi_ext_benign.parquet"
   coordinate_system: "cartesian"
-  # Real-world corpora. Montreal is released by the authors (see README);
-  # the other four are obtained from their original public sources.
+
+  # Real-world corpora (used by --cross-eval and --corpus real).
+  #
+  # Loading is manifest-driven: `manifest` is a CSV with a `source_id` column,
+  # and for every row the loader reads `<canonical_dir>/<source_id>.parquet`.
+  # Device IDs are prefixed with the source_id so they stay unique when the
+  # sources are pooled. See examples/canonical_manifest.example.csv for the schema
+  # and the README "Data availability" section for where each dataset comes
+  # from. To add a dataset, drop <source_id>.parquet into canonical_dir and add
+  # a row to the manifest; no code change is needed.
+  #
+  # `--real-corpus core` keeps only sources whose source_id starts with "T1"
+  # (the authors' Montreal collection sessions); `--real-corpus full` pools
+  # every source in the manifest, which is what the paper's five-dataset
+  # cross-deployment evaluation uses.
   canonical_dir: "data/canonical"
   manifest: "data/canonical/canonical_manifest.csv"
-  montreal_combined_path: "data/canonical/montreal_combined.parquet"
-  external_sites:
-    v2aix_aachen: "data/external/v2aix_aachen.parquet"
-    bme_budapest: "data/external/bme_budapest.parquet"
 
 column_bridge:
   timestamp_s: "timestamp"

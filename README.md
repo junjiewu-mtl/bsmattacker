@@ -3,6 +3,8 @@
 **A reproducible benchmark and attack-injection library for V2X Basic Safety Message (BSM) misbehavior detection.**
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20754023.svg)](https://doi.org/10.5281/zenodo.20754023)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 
 BSMAttacker is the research artifact for the paper *"BSMAttacker: Simulation-to-Field
 Evaluation of Safety-Application-Directed V2X Misbehavior Detection"* (IEEE Transactions
@@ -30,8 +32,8 @@ events and intersection-movement assist for 57.4%.
 | [`benchmark/configs/benchmark.yaml`](benchmark/configs/benchmark.yaml) | Detector hyperparameters, the eleven-attack set, feature definitions, and corpus paths. |
 | [`benchmark/sanitize_sentinels.py`](benchmark/sanitize_sentinels.py) | Optional data-integrity pass: replaces out-of-range BSM/CAM "value unavailable" sentinel codes with missing values (paper Section IV). |
 | [`safety_replay/`](safety_replay/) | Forward-collision (FCW), intersection-movement (IMA), and emergency-brake (EEBL) replay on real warning events. |
-| [`examples/`](examples/) | A smoke test and a small example trace. |
-| [`tests/`](tests/) | A minimal functional test that injects an attack and checks the labels. |
+| [`examples/`](examples/) | A smoke test, a small example trace, and the corpus-manifest template ([`canonical_manifest.example.csv`](examples/canonical_manifest.example.csv)). |
+| [`tests/`](tests/) | Functional tests for attack injection and the data-integrity pass. |
 
 ## Installation
 
@@ -44,8 +46,10 @@ pip install -e .                  # the bsm_attacker, benchmark, and safety_repl
 ```
 
 Python 3.10 or newer is required. The `requirements.txt` pins the exact versions used for
-the published results; relax them to `>=` if you only need the attack library. Deep SVDD
-additionally needs `deepod` (`pip install -e ".[deep-svdd]"`).
+the published results, including `deepod`, which only the Deep SVDD detector needs; relax
+the pins to `>=` if you only need the attack library. If you install through
+`pyproject.toml` instead, Deep SVDD comes from an optional extra:
+`pip install -e ".[deep-svdd]"`.
 
 ## Quick start
 
@@ -123,16 +127,22 @@ python -m benchmark.run_benchmark --corpus synthetic --models iforest --attacks 
 # 2. Full synthetic matrix (nine detectors x eleven attacks).
 python -m benchmark.run_benchmark --corpus synthetic
 
-# 3. Cross-deployment evaluation on the real-world corpora.
-python -m benchmark.run_benchmark --cross-eval
+# 3. Cross-deployment evaluation on the real-world corpora
+#    (--real-corpus full pools every dataset in the manifest, as in the paper).
+python -m benchmark.run_benchmark --cross-eval --real-corpus full
 
 # 4. Safety-application replay (FCW / IMA / EEBL) on real warning events.
 python -m safety_replay.replay --config safety_replay/configs/replay.yaml
 ```
 
-Edit the `corpus:` paths in [`benchmark/configs/benchmark.yaml`](benchmark/configs/benchmark.yaml)
-to point at your local copies of the datasets. The training split is vehicle-disjoint and
-the random seed is fixed at 42.
+Point `corpus.synthetic_path` in
+[`benchmark/configs/benchmark.yaml`](benchmark/configs/benchmark.yaml) at your copy of the
+VeReMi Extension corpus. The real-world datasets are loaded through a manifest: put one
+`<source_id>.parquet` per dataset under `corpus.canonical_dir` and list each `source_id`
+in the manifest CSV named by `corpus.manifest`. A template with the paper's five datasets
+is in [`examples/canonical_manifest.example.csv`](examples/canonical_manifest.example.csv).
+Adding a dataset needs no code change. The training split is vehicle-disjoint and the
+random seed is fixed at 42.
 
 The commands above reproduce the published tables directly. A small fraction of the
 real-world logs (under 0.1% of rows, mostly in yaw rate) carry the BSM/CAM reserved

@@ -28,7 +28,6 @@ import yaml
 # ---------------------------------------------------------------------------
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parents[0]
-_MAIN_REPO = PROJECT_ROOT
 
 sys.path.insert(0, str(PROJECT_ROOT))
 
@@ -52,21 +51,31 @@ def load_config(config_path: Path = None) -> dict:
 # ======================================================================
 
 def load_corpus(cfg: dict, corpus_mode: str = "core") -> pd.DataFrame:
-    """Load and pool canonical parquet files.
+    """Load and pool the real-world corpora listed in the manifest.
+
+    The manifest is a CSV with a ``source_id`` column; for each row the loader
+    reads ``<canonical_dir>/<source_id>.parquet``. Both paths come from the
+    ``corpus`` section of the config. See ``examples/canonical_manifest.example.csv``.
 
     Args:
-        corpus_mode: "core" restricts to the primary (the primary sites) sources;
-            any other value pools all sources in the manifest.
+        corpus_mode: "core" keeps only sources whose ``source_id`` starts with
+            "T1" (the authors' Montreal collection sessions); any other value
+            pools every source in the manifest, which is what the paper's
+            five-dataset cross-deployment evaluation uses.
 
     Returns:
         Pooled DataFrame with unique device_id (prefixed with source_id).
     """
-    canon_dir = _MAIN_REPO / cfg["corpus"]["canonical_dir"]
-    manifest_path = _MAIN_REPO / cfg["corpus"]["manifest"]
+    canon_dir = PROJECT_ROOT / cfg["corpus"]["canonical_dir"]
+    manifest_path = PROJECT_ROOT / cfg["corpus"]["manifest"]
     if not manifest_path.exists():
-        # Fallback to PROJECT_ROOT (non-worktree case)
-        canon_dir = PROJECT_ROOT / cfg["corpus"]["canonical_dir"]
-        manifest_path = PROJECT_ROOT / cfg["corpus"]["manifest"]
+        raise FileNotFoundError(
+            f"Corpus manifest not found: {manifest_path}\n"
+            f"The real-world corpora are not redistributed with this repository. "
+            f"Obtain them as described in the README 'Data availability' section, "
+            f"place <source_id>.parquet under {canon_dir}, and list each source_id "
+            f"in the manifest CSV (template: examples/canonical_manifest.example.csv)."
+        )
     manifest = pd.read_csv(manifest_path)
 
     if corpus_mode == "core":

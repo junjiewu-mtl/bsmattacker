@@ -1,0 +1,6 @@
+source_id,dataset,location,notes
+T1A-01,Montreal,"Montreal, QC, Canada",Authors' OBU collection session. Sources whose source_id starts with T1 form the --real-corpus core subset.
+spmd_annarbor,SPMD,"Ann Arbor, MI, USA",Safety Pilot Model Deployment. Obtain from the original public source.
+v2aix_aachen,V2AIX,"Aachen, Germany",ETSI ITS CAM traces. Obtain from the original public source.
+bme_budapest,BME,"Budapest, Hungary",Highway testbed CAM traces. Obtain from the original public source.
+amcd_arlington,AMCD,"Tysons, VA, USA",Obtain from the USDOT ITS DataHub.

@@ -11,8 +11,10 @@ checkpoints/
 *.pkl
 *.npz
 
-# Allow the small example fixture used by the smoke test and unit test.
+# Allow the small example fixtures: the trace used by the smoke test and unit
+# test, and the corpus-manifest template.
 !examples/sample_trace.csv
+!examples/canonical_manifest.example.csv
 
 # Native / compiled artifacts (none ship here, but block them by default).
 *.so
