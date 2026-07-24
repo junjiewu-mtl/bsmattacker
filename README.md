@@ -28,6 +28,7 @@ events and intersection-movement assist for 57.4%.
 | [`bsm_attacker/`](bsm_attacker/) | The attack-injection library: a `BaseAttacker` interface, an `AttackPipeline`, the VeReMi Extension sensor-noise model, and the attack implementations. |
 | [`benchmark/`](benchmark/) | The evaluation harness: the injection/feature engine ([`injection_engine.py`](benchmark/injection_engine.py)), the nine-detector zoo ([`detectors.py`](benchmark/detectors.py)), the plausibility check ([`plausibility_check.py`](benchmark/plausibility_check.py)), and the benchmark driver ([`run_benchmark.py`](benchmark/run_benchmark.py)). |
 | [`benchmark/configs/benchmark.yaml`](benchmark/configs/benchmark.yaml) | Detector hyperparameters, the eleven-attack set, feature definitions, and corpus paths. |
+| [`benchmark/sanitize_sentinels.py`](benchmark/sanitize_sentinels.py) | Optional data-integrity pass: replaces out-of-range BSM/CAM "value unavailable" sentinel codes with missing values (paper Section IV). |
 | [`safety_replay/`](safety_replay/) | Forward-collision (FCW), intersection-movement (IMA), and emergency-brake (EEBL) replay on real warning events. |
 | [`examples/`](examples/) | A smoke test and a small example trace. |
 | [`tests/`](tests/) | A minimal functional test that injects an attack and checks the labels. |
@@ -133,6 +134,20 @@ Edit the `corpus:` paths in [`benchmark/configs/benchmark.yaml`](benchmark/confi
 to point at your local copies of the datasets. The training split is vehicle-disjoint and
 the random seed is fixed at 42.
 
+The commands above reproduce the published tables directly. A small fraction of the
+real-world logs (under 0.1% of rows, mostly in yaw rate) carry the BSM/CAM reserved
+"value unavailable" sentinel codes; to reproduce the paper's Section IV data-integrity
+check, replace them with missing values first:
+
+```bash
+python -m benchmark.sanitize_sentinels --in raw.parquet --out clean.parquet
+```
+
+Replacing these placeholders shifts every reported AUROC by at most 0.002, below the
+display precision of the result tables, so the published rankings and findings are
+unchanged. Row counts are preserved (values become NaN, not dropped), so the split is
+identical.
+
 ## Data availability
 
 The code in this repository reproduces the benchmark; the datasets are obtained separately.
@@ -140,7 +155,7 @@ The code in this repository reproduces the benchmark; the datasets are obtained 
 | Dataset | Role | Access |
 |---|---|---|
 | VeReMi Extension | synthetic training corpus | Public (cite van der Heijden et al. 2018; Kamel et al. 2020). |
-| Montreal | real-world (collected by the authors) | Released by the authors via a Zenodo DOI (de-identified; pending institutional ethics confirmation). |
+| Montreal | real-world (collected by the authors) | Available from the authors on request (de-identified, transmit-only BSM logs). |
 | SPMD Ann Arbor | real-world | Public; obtain from the original source. |
 | AMCD Tysons | real-world | Public; obtain from USDOT ITS DataHub. |
 | V2AIX Aachen | real-world | Public; obtain from the original source. |
@@ -165,7 +180,8 @@ If you use BSMAttacker, please cite the paper and the software (see `CITATION.cf
 }
 ```
 
-The Zenodo DOI for the exact software version is added to this section at release.
+The Zenodo archive of this software version is at
+[doi.org/10.5281/zenodo.20754023](https://doi.org/10.5281/zenodo.20754023).
 
 ## Acknowledgments
 
